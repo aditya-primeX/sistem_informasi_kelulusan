@@ -62,13 +62,14 @@ class StudentController extends Controller
     // Grade management
     public function grades(Student $student)
     {
-        return view('admin.students.grades', compact('student'));
+        $subjects = \App\Models\Subject::all();
+        return view('admin.students.grades', compact('student', 'subjects'));
     }
 
     public function updateGrades(Request $request, Student $student)
     {
         $request->validate([
-            'grades.*.subject_name' => 'required|string',
+            'grades.*.subject_id' => 'required|exists:subjects,id',
             'grades.*.score' => 'required|integer|min:0|max:100',
         ]);
 

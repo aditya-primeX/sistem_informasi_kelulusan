@@ -20,7 +20,14 @@
                         @forelse($student->grades as $index => $grade)
                         <div class="row mb-2 grade-row">
                             <div class="col-md-6">
-                                <input type="text" name="grades[{{ $index }}][subject_name]" class="form-control" value="{{ $grade->subject_name }}" placeholder="Mata Pelajaran" required>
+                                <select name="grades[{{ $index }}][subject_id]" class="form-control" required>
+                                    <option value="">-- Pilih Mata Pelajaran --</option>
+                                    @foreach($subjects as $subject)
+                                        <option value="{{ $subject->id }}" {{ $grade->subject_id == $subject->id ? 'selected' : '' }}>
+                                            {{ $subject->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <input type="number" name="grades[{{ $index }}][score]" class="form-control" value="{{ $grade->score }}" placeholder="Nilai" required min="0" max="100">
@@ -32,7 +39,12 @@
                         @empty
                         <div class="row mb-2 grade-row">
                             <div class="col-md-6">
-                                <input type="text" name="grades[0][subject_name]" class="form-control" placeholder="Mata Pelajaran" required>
+                                <select name="grades[0][subject_id]" class="form-control" required>
+                                    <option value="">-- Pilih Mata Pelajaran --</option>
+                                    @foreach($subjects as $subject)
+                                        <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <input type="number" name="grades[0][score]" class="form-control" placeholder="Nilai" required min="0" max="100">
@@ -58,14 +70,23 @@
 @push('scripts')
 <script>
     let gradeIndex = {{ count($student->grades) > 0 ? count($student->grades) : 1 }};
+    const subjects = @json($subjects);
     
     document.getElementById('add-grade').addEventListener('click', function() {
         const container = document.getElementById('grades-container');
         const row = document.createElement('div');
         row.className = 'row mb-2 grade-row';
+        
+        let subjectOptions = '<option value="">-- Pilih Mata Pelajaran --</option>';
+        subjects.forEach(subject => {
+            subjectOptions += `<option value="${subject.id}">${subject.name}</option>`;
+        });
+
         row.innerHTML = `
             <div class="col-md-6">
-                <input type="text" name="grades[${gradeIndex}][subject_name]" class="form-control" placeholder="Mata Pelajaran" required>
+                <select name="grades[${gradeIndex}][subject_id]" class="form-control" required>
+                    ${subjectOptions}
+                </select>
             </div>
             <div class="col-md-4">
                 <input type="number" name="grades[${gradeIndex}][score]" class="form-control" placeholder="Nilai" required min="0" max="100">

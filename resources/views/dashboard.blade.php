@@ -1,346 +1,317 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
-@section('page_title', 'Dashboard v3')
+@section('title', 'Dashboard Statistik')
+@section('page_title', 'Ringkasan Sistem Informasi Kelulusan')
+
+@push('styles')
+<style>
+    .hover-translate {
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+    .hover-translate:hover {
+        transform: translateY(-3px);
+        background-color: #fff !important;
+        border-color: #3a81e9;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    }
+    .small-box {
+        position: relative;
+        overflow: hidden;
+    }
+    .small-box .icon {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        z-index: 0;
+        font-size: 70px;
+        transition: transform 0.3s linear;
+    }
+    .small-box:hover .icon {
+        transform: scale(1.1);
+    }
+</style>
+@endpush
 
 @section('content')
-<!-- Info boxes -->
+<!-- Small boxes (Stat box) -->
 <div class="row">
-    <div class="col-12 col-sm-6 col-md-4">
-        <div class="info-box">
-            <span class="info-box-icon bg-info elevation-1"><i class="bi bi-people-fill"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Siswa</span>
-                <span class="info-box-number">{{ $totalStudents }}</span>
+    <div class="col-lg-4 col-12">
+        <!-- small box -->
+        <div class="small-box bg-primary shadow-sm border-0 text-white">
+            <div class="inner p-4 position-relative" style="z-index: 5;">
+                <h3>{{ $totalStudents }}</h3>
+                <p class="fs-5">Total Siswa Terdaftar</p>
+            </div>
+            <div class="icon">
+                <i class="fa-solid fa-user-graduate opacity-25"></i>
+            </div>
+            <a href="{{ route('students.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 col-12">
+        <!-- small box -->
+        <div class="small-box bg-success shadow-sm border-0 text-white">
+            <div class="inner p-4 position-relative" style="z-index: 5;">
+                <h3>{{ $totalLulus }}</h3>
+                <p class="fs-5">Siswa Dinyatakan Lulus</p>
+            </div>
+            <div class="icon">
+                <i class="fa-solid fa-certificate opacity-25"></i>
+            </div>
+            <a href="{{ route('students.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-4 col-12">
+        <!-- small box -->
+        <div class="small-box bg-danger shadow-sm border-0 text-white">
+            <div class="inner p-4 position-relative" style="z-index: 5;">
+                <h3>{{ $totalTidakLulus }}</h3>
+                <p class="fs-5">Siswa Tidak Lulus</p>
+            </div>
+            <div class="icon">
+                <i class="fa-solid fa-circle-xmark opacity-25"></i>
+            </div>
+            <a href="{{ route('students.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom-0 pt-4">
+                <h3 class="card-title fw-bold">
+                    <i class="fa-solid fa-chart-bar me-2 text-primary"></i>
+                    Rata-rata Nilai per Mata Pelajaran
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="subject-scores-chart" style="min-height: 350px;"></div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom-0 pt-4">
+                <h3 class="card-title fw-bold">
+                    <i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>
+                    Siswa Terbaru
+                </h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Nama</th>
+                                <th>NIS</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentStudents as $student)
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                            <i class="fa-solid fa-user text-secondary"></i>
+                                        </div>
+                                        <span class="fw-semibold">{{ $student->name }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ $student->nis }}</td>
+                                <td>
+                                    <span class="badge {{ $student->graduation_status == 'Lulus' ? 'bg-success' : 'bg-danger' }} rounded-pill px-3">
+                                        {{ $student->graduation_status }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="{{ route('students.grades', $student->id) }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                        <i class="fa-solid fa-eye me-1"></i> Nilai
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Belum ada data siswa.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-top-0 text-center pb-4">
+                <a href="{{ route('students.index') }}" class="text-decoration-none fw-bold">Lihat Semua Siswa <i class="fa-solid fa-arrow-right ms-1"></i></a>
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-md-4">
-        <div class="info-box mb-3">
-            <span class="info-box-icon bg-success elevation-1"><i class="bi bi-patch-check-fill"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Lulus</span>
-                <span class="info-box-number">{{ $totalLulus }}</span>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom-0 pt-4">
+                <h3 class="card-title fw-bold">
+                    <i class="fa-solid fa-chart-pie me-2 text-primary"></i>
+                    Persentase Kelulusan
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="graduation-pie-chart" style="min-height: 300px;"></div>
             </div>
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-md-4">
-        <div class="info-box mb-3">
-            <span class="info-box-icon bg-danger elevation-1"><i class="bi bi-patch-exclamation-fill"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Tidak Lulus</span>
-                <span class="info-box-number">{{ $totalTidakLulus }}</span>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom-0 pt-4">
+                <h3 class="card-title fw-bold">
+                    <i class="fa-solid fa-bolt me-2 text-warning"></i>
+                    Aksi Cepat
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-3">
+                    <a href="{{ route('students.create') }}" class="btn btn-light text-start p-3 shadow-sm hover-translate">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 text-primary">
+                                <i class="fa-solid fa-user-plus fa-lg"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Tambah Siswa Baru</div>
+                                <small class="text-muted">Daftarkan siswa baru ke sistem</small>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ route('subjects.index') }}" class="btn btn-light text-start p-3 shadow-sm hover-translate">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3 text-success">
+                                <i class="fa-solid fa-book-open fa-lg"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Kelola Mata Pelajaran</div>
+                                <small class="text-muted">Atur data master mata pelajaran</small>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ route('students.index') }}" class="btn btn-light text-start p-3 shadow-sm hover-translate">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info bg-opacity-10 p-2 rounded-3 me-3 text-info">
+                                <i class="fa-solid fa-clipboard-list fa-lg"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Daftar Siswa</div>
+                                <small class="text-muted">Kelola data dan nilai kelulusan</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<!-- /.row -->
-
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card mb-4">
-            <div class="card-header border-0">
-                <div class="d-flex justify-content-between">
-                    <h3 class="card-title">Online Store Visitors</h3>
-                    <a href="javascript:void(0);" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">View Report</a>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="d-flex">
-                    <p class="d-flex flex-column">
-                        <span class="fw-bold fs-5">820</span>
-                        <span>Visitors Over Time</span>
-                    </p>
-                    <p class="ms-auto d-flex flex-column text-end">
-                        <span class="text-success"> <i class="bi bi-arrow-up"></i> 12.5% </span>
-                        <span class="text-secondary">Since last week</span>
-                    </p>
-                </div>
-                <!-- /.d-flex -->
-
-                <div class="position-relative mb-4">
-                    <div id="visitors-chart"></div>
-                </div>
-
-                <div class="d-flex flex-row justify-content-end">
-                    <span class="me-2">
-                        <i class="bi bi-square-fill text-primary"></i> This Week
-                    </span>
-
-                    <span> <i class="bi bi-square-fill text-secondary"></i> Last Week </span>
-                </div>
-            </div>
-        </div>
-        <!-- /.card -->
-
-        <div class="card mb-4">
-            <div class="card-header border-0">
-                <h3 class="card-title">Products</h3>
-                <div class="card-tools">
-                    <a href="#" class="btn btn-tool btn-sm">
-                        <i class="bi bi-download"></i>
-                    </a>
-                    <a href="#" class="btn btn-tool btn-sm">
-                        <i class="bi bi-list"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="card-body table-responsive p-0">
-                <table class="table table-striped align-middle">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Sales</th>
-                            <th>More</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <img src="{{ asset('assets/adminlte/assets/img/default-150x150.png') }}" alt="Product 1" class="rounded-circle img-size-32 me-2" />
-                                Some Product
-                            </td>
-                            <td>$13 USD</td>
-                            <td>
-                                <small class="text-success me-1">
-                                    <i class="bi bi-arrow-up"></i>
-                                    12%
-                                </small>
-                                12,000 Sold
-                            </td>
-                            <td>
-                                <a href="#" class="text-secondary">
-                                    <i class="bi bi-search"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img src="{{ asset('assets/adminlte/assets/img/default-150x150.png') }}" alt="Product 1" class="rounded-circle img-size-32 me-2" />
-                                Another Product
-                            </td>
-                            <td>$29 USD</td>
-                            <td>
-                                <small class="text-info me-1">
-                                    <i class="bi bi-arrow-down"></i>
-                                    0.5%
-                                </small>
-                                123,234 Sold
-                            </td>
-                            <td>
-                                <a href="#" class="text-secondary">
-                                    <i class="bi bi-search"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- /.card -->
-    </div>
-    <!-- /.col-md-6 -->
-    <div class="col-lg-6">
-        <div class="card mb-4">
-            <div class="card-header border-0">
-                <div class="d-flex justify-content-between">
-                    <h3 class="card-title">Sales</h3>
-                    <a href="javascript:void(0);" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">View Report</a>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="d-flex">
-                    <p class="d-flex flex-column">
-                        <span class="fw-bold fs-5">$18,230.00</span>
-                        <span>Sales Over Time</span>
-                    </p>
-                    <p class="ms-auto d-flex flex-column text-end">
-                        <span class="text-success"> <i class="bi bi-arrow-up"></i> 33.1% </span>
-                        <span class="text-secondary">Since Past Year</span>
-                    </p>
-                </div>
-                <!-- /.d-flex -->
-
-                <div class="position-relative mb-4">
-                    <div id="sales-chart"></div>
-                </div>
-
-                <div class="d-flex flex-row justify-content-end">
-                    <span class="me-2">
-                        <i class="bi bi-square-fill text-primary"></i> This year
-                    </span>
-
-                    <span> <i class="bi bi-square-fill text-secondary"></i> Last year </span>
-                </div>
-            </div>
-        </div>
-        <!-- /.card -->
-
-        <div class="card">
-            <div class="card-header border-0">
-                <h3 class="card-title">Online Store Overview</h3>
-                <div class="card-tools">
-                    <a href="#" class="btn btn-sm btn-tool">
-                        <i class="bi bi-download"></i>
-                    </a>
-                    <a href="#" class="btn btn-sm btn-tool">
-                        <i class="bi bi-list"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                    <p class="text-success fs-2">
-                        <i class="bi bi-cart"></i>
-                    </p>
-                    <p class="d-flex flex-column text-end">
-                        <span class="fw-bold">
-                            <i class="bi bi-graph-up-arrow text-success"></i> 12%
-                        </span>
-                        <span class="text-secondary">CONVERSION RATE</span>
-                    </p>
-                </div>
-                <!-- /.d-flex -->
-                <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                    <p class="text-info fs-2">
-                        <i class="bi bi-bag"></i>
-                    </p>
-                    <p class="d-flex flex-column text-end">
-                        <span class="fw-bold">
-                            <i class="bi bi-graph-up-arrow text-info"></i> 0.8%
-                        </span>
-                        <span class="text-secondary">SALES RATE</span>
-                    </p>
-                </div>
-                <!-- /.d-flex -->
-                <div class="d-flex justify-content-between align-items-center mb-0">
-                    <p class="text-danger fs-2">
-                        <i class="bi bi-people"></i>
-                    </p>
-                    <p class="d-flex flex-column text-end">
-                        <span class="fw-bold">
-                            <i class="bi bi-graph-down-arrow text-danger"></i>
-                            1%
-                        </span>
-                        <span class="text-secondary">REGISTRATION RATE</span>
-                    </p>
-                </div>
-                <!-- /.d-flex -->
-            </div>
-        </div>
-    </div>
-    <!-- /.col-md-6 -->
-</div>
-<!-- /.row -->
 @endsection
 
 @push('scripts')
-<!-- apexcharts -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" crossorigin="anonymous"></script>
-
 <script>
-    const visitors_chart_options = {
-        series: [{
-                name: 'High - 2023',
-                data: [100, 120, 170, 167, 180, 177, 160],
-            },
-            {
-                name: 'Low - 2023',
-                data: [60, 80, 70, 67, 80, 77, 100],
-            },
-        ],
-        chart: {
-            height: 200,
-            type: 'line',
-            toolbar: {
-                show: false,
-            },
-        },
-        colors: ['#0d6efd', '#adb5bd'],
-        stroke: {
-            curve: 'smooth',
-        },
-        grid: {
-            borderColor: '#e7e7e7',
-            row: {
-                colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                opacity: 0.5,
-            },
-        },
-        legend: {
-            show: false,
-        },
-        markers: {
-            size: 1,
-        },
-        xaxis: {
-            categories: ['22th', '23th', '24th', '25th', '26th', '27th', '28th'],
-        },
-    };
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bar Chart - Average Scores
+        const subjectStats = @json($subjectStats);
+        const categories = subjectStats.map(s => s.name);
+        const averages = subjectStats.map(s => s.avg);
 
-    const visitors_chart = new ApexCharts(
-        document.querySelector('#visitors-chart'),
-        visitors_chart_options,
-    );
-    visitors_chart.render();
+        const barOptions = {
+            series: [{
+                name: 'Rata-rata Nilai',
+                data: averages
+            }],
+            chart: {
+                type: 'bar',
+                height: 350,
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                }
+            },
+            colors: ['#3a81e9', '#34d399', '#fbbf24', '#f87171', '#818cf8', '#fb7185', '#2dd4bf'],
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            xaxis: {
+                categories: categories,
+                labels: {
+                    style: { fontSize: '12px' }
+                }
+            },
+            yaxis: {
+                max: 100,
+                labels: {
+                    style: { fontSize: '12px' }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) { return val + " / 100" }
+                }
+            },
+            grid: {
+                borderColor: '#f1f1f1',
+            }
+        };
 
-    const sales_chart_options = {
-        series: [{
-                name: 'Net Profit',
-                data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
-            },
-            {
-                name: 'Revenue',
-                data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
-            },
-            {
-                name: 'Free Cash Flow',
-                data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
-            },
-        ],
-        chart: {
-            type: 'bar',
-            height: 200,
-        },
-        plotOptions: {
-            bar: {
-                horizontal: false,
-                columnWidth: '55%',
-                endingShape: 'rounded',
-            },
-        },
-        legend: {
-            show: false,
-        },
-        colors: ['#0d6efd', '#20c997', '#ffc107'],
-        dataLabels: {
-            enabled: false,
-        },
-        stroke: {
-            show: true,
-            width: 2,
-            colors: ['transparent'],
-        },
-        xaxis: {
-            categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-        },
-        fill: {
-            opacity: 1,
-        },
-        tooltip: {
-            y: {
-                formatter: function(val) {
-                    return '$ ' + val + ' thousands';
-                },
-            },
-        },
-    };
+        const barChart = new ApexCharts(document.querySelector("#subject-scores-chart"), barOptions);
+        barChart.render();
 
-    const sales_chart = new ApexCharts(
-        document.querySelector('#sales-chart'),
-        sales_chart_options,
-    );
-    sales_chart.render();
+        // Pie Chart - Graduation Status
+        const pieOptions = {
+            series: [{{ $totalLulus }}, {{ $totalTidakLulus }}],
+            labels: ['Lulus', 'Tidak Lulus'],
+            chart: {
+                type: 'donut',
+                height: 350,
+            },
+            colors: ['#10b981', '#ef4444'],
+            legend: {
+                position: 'bottom'
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val.toFixed(1) + "%"
+                }
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Total Siswa',
+                                formatter: function (w) {
+                                    return {{ $totalStudents }}
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: { width: 200 },
+                    legend: { position: 'bottom' }
+                }
+            }]
+        };
+
+        const pieChart = new ApexCharts(document.querySelector("#graduation-pie-chart"), pieOptions);
+        pieChart.render();
+    });
 </script>
 @endpush

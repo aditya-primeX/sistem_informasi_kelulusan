@@ -6,6 +6,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\SubjectController;
 
 // Siswa Routes
 Route::get('/', [SiswaController::class, 'index'])->name('siswa.index');
@@ -24,6 +25,7 @@ Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.lo
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('students', StudentController::class);
+    Route::resource('subjects', SubjectController::class);
     Route::get('students/{student}/grades', [StudentController::class, 'grades'])->name('students.grades');
     Route::post('students/{student}/grades', [StudentController::class, 'updateGrades'])->name('students.grades.update');
 });

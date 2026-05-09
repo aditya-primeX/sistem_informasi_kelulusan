@@ -79,7 +79,7 @@
             @forelse($student->grades as $index => $grade)
             <tr>
                 <td class="center">{{ $index + 1 }}</td>
-                <td>{{ $grade->subject_name }}</td>
+                <td>{{ $grade->subject->name }}</td>
                 <td class="center">{{ $grade->score }}</td>
             </tr>
             @php $total += $grade->score; @endphp

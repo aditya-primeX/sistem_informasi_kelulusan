@@ -4,14 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Subject extends Model
 {
-    protected $fillable = [
-        'name',
-        'nis',
-        'date_of_birth',
-        'graduation_status',
-    ];
+    protected $fillable = ['name'];
 
     public function grades()
     {

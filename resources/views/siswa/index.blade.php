@@ -44,13 +44,12 @@
         }
         .logo-placeholder {
             width: 80px;
-            height: 80px;
             background: #f8f9fa;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
+            margin: 0 auto;
             font-size: 2rem;
         }
     </style>
@@ -86,6 +85,11 @@
         
         <div class="mt-4 text-center">
             <small class="text-muted">© {{ date('Y') }} Sistem Informasi Kelulusan Sekolah</small>
+            <div class="mt-2">
+                <a href="{{ route('admin.login') }}" class="text-secondary text-decoration-none" style="font-size: 0.85rem;">
+                    🔐 Login Staff/Admin
+                </a>
+            </div>
         </div>
     </div>
 </body>

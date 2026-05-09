@@ -41,12 +41,18 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('students.grades', $student->id) }}" class="btn btn-info btn-sm">Nilai</a>
-                                <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ route('students.grades', $student->id) }}" class="btn btn-info btn-sm">
+                                    <i class="fa-solid fa-graduation-cap"></i> Nilai
+                                </a>
+                                <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">
+                                    <i class="fa-solid fa-user-pen"></i> Edit
+                                </a>
                                 <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus siswa ini?')">Hapus</button>
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus siswa ini?')">
+                                        <i class="fa-solid fa-user-minus"></i> Hapus
+                                    </button>
                                 </form>
                             </td>
                         </tr>

@@ -35,7 +35,9 @@
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="{{ asset('assets/adminlte/css/adminlte.css') }}" />
     <!--end::Required Plugin(AdminLTE)-->
-
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     @stack('styles')
 </head>
 
@@ -74,36 +76,22 @@
 
                     <!--begin::User Menu Dropdown-->
                     <li class="nav-item dropdown user-menu">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="{{ asset('assets/adminlte/assets/img/user2-160x160.jpg') }}" class="user-image rounded-circle shadow" alt="User Image" />
-                            <span class="d-none d-md-inline">Alexander Pierce</span>
+                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-circle-user fa-2x"></i>
+                            <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                             <!--begin::User Image-->
                             <li class="user-header text-bg-primary">
-                                <img src="{{ asset('assets/adminlte/assets/img/user2-160x160.jpg') }}" class="rounded-circle shadow" alt="User Image" />
+                                <i class="fa-solid fa-circle-user fa-5x"></i>
                                 <p>
-                                    Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2023</small>
+                                    {{ auth()->user()->name }}
+                                    <small>Staff Admin</small>
                                 </p>
                             </li>
                             <!--end::User Image-->
                             <!--begin::Menu Body-->
-                            <li class="user-body">
-                                <!--begin::Row-->
-                                <div class="row">
-                                    <div class="col-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
-                                </div>
-                                <!--end::Row-->
-                            </li>
+                         
                             <!--end::Menu Body-->
                             <!--begin::Menu Footer-->
                             <li class="user-footer">
@@ -152,6 +140,12 @@
                             <a href="{{ route('students.index') }}" class="nav-link {{ request()->is('admin/students*') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-people-fill"></i>
                                 <p>Daftar Siswa</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('subjects.index') }}" class="nav-link {{ request()->is('admin/subjects*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-book"></i>
+                                <p>Mata Pelajaran</p>
                             </a>
                         </li>
                         <li class="nav-header">AKUN</li>
@@ -211,14 +205,13 @@
         <!--begin::Footer-->
         <footer class="app-footer">
             <!--begin::To the end-->
-            <div class="float-end d-none d-sm-inline">Anything you want</div>
+            <div class="float-end d-none d-sm-inline">Team Tomodachi</div>
             <!--end::To the end-->
             <!--begin::Copyright-->
             <strong>
-                Copyright &copy; 2014-{{ date('Y') }}&nbsp;
-                <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+                Capstone Project Team B
             </strong>
-            All rights reserved.
+           
             <!--end::Copyright-->
         </footer>
         <!--end::Footer-->

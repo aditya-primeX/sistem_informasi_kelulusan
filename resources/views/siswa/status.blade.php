@@ -13,7 +13,8 @@
             color: #2d3436;
         }
         .status-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background-color: #3a81e9;
             padding: 60px 0;
             color: white;
             text-align: center;
@@ -113,7 +114,7 @@
                             <tbody>
                                 @forelse($student->grades as $grade)
                                 <tr>
-                                    <td>{{ $grade->subject_name }}</td>
+                                    <td>{{ $grade->subject->name }}</td>
                                     <td class="text-center fw-bold">{{ $grade->score }}</td>
                                 </tr>
                                 @empty
@@ -137,6 +138,11 @@
 
     <footer class="text-center py-4 text-muted">
         <small>© {{ date('Y') }} Sistem Informasi Kelulusan Sekolah</small>
+        <div class="mt-1">
+            <a href="{{ route('admin.login') }}" class="text-secondary text-decoration-none" style="font-size: 0.8rem;">
+                🔐 Staff Login
+            </a>
+        </div>
     </footer>
 </body>
 </html>
