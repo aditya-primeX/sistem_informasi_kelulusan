@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\Grade;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StudentTemplateExport;
+use App\Imports\StudentsImport;
 
 class StudentController extends Controller
 {
@@ -81,5 +84,21 @@ class StudentController extends Controller
         }
 
         return back()->with('success', 'Nilai siswa berhasil diperbarui.');
+    }
+
+    public function exportTemplate()
+    {
+        return Excel::download(new StudentTemplateExport, 'template_siswa.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+        
+        Excel::import(new StudentsImport, $request->file('file'));
+
+        return redirect()->route('students.index')->with('success', 'Data siswa berhasil diimport.');
     }
 }

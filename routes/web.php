@@ -24,6 +24,8 @@ Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.lo
 // Admin Protected Routes
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('students/export-template', [StudentController::class, 'exportTemplate'])->name('students.export-template');
+    Route::post('students/import', [StudentController::class, 'import'])->name('students.import');
     Route::resource('students', StudentController::class);
     Route::resource('subjects', SubjectController::class);
     Route::get('students/{student}/grades', [StudentController::class, 'grades'])->name('students.grades');

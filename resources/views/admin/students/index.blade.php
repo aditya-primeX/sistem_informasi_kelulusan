@@ -10,7 +10,48 @@
             <div class="card-header">
                 <h3 class="card-title">Data Siswa</h3>
                 <div class="card-tools">
-                    <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">Tambah Siswa</a>
+                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="fa-solid fa-file-import"></i> Import Excel
+                    </button>
+                    <a href="{{ route('students.export-template') }}" class="btn btn-success btn-sm">
+                        <i class="fa-solid fa-file-excel"></i> Download Template Excel
+                    </a>
+                    <a href="{{ route('students.create') }}" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-plus"></i> Tambah Siswa
+                    </a>
+                </div>
+            </div>
+
+            <!-- Import Modal -->
+            <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="importForm" action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="importModalLabel">Import Data Siswa dari Excel</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="file" class="form-label">Pilih File Excel</label>
+                                    <input type="file" class="form-control" id="file" name="file" required>
+                                    <div class="form-text">Format yang didukung: .xlsx, .xls, .csv</div>
+                                </div>
+                                <div class="alert alert-info">
+                                    <small>
+                                        <i class="fa-solid fa-circle-info"></i> Pastikan format file sesuai dengan template yang diunduh. Gunakan NIS sebagai pengenal unik siswa.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary" id="importSubmitBtn">
+                                    <i class="fa-solid fa-file-import"></i> Mulai Import
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -64,3 +105,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.getElementById('importForm').addEventListener('submit', function() {
+        var submitBtn = document.getElementById('importSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
+    });
+</script>
+@endpush
