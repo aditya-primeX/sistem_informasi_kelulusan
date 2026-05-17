@@ -81,7 +81,7 @@
         </form>
         <div class="container">
             <h1 class="fw-bold">Pengumuman Kelulusan</h1>
-            <p class="lead">Tahun Pelajaran 2024/2025</p>
+            <p class="lead">Tahun Pelajaran 2025/2026</p>
         </div>
     </header>
 
