@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard Statistik')
-@section('page_title', 'Ringkasan Sistem Informasi Kelulusan')
+@section('title', 'Dashboard UPT SMPN 3 Tanjung Emas')
+@section('page_title', 'Ringkasan Sistem Informasi Kelulusan UPT SMPN 3 Tanjung Emas')
 
 @push('styles')
 <style>
